@@ -1,0 +1,22 @@
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+# Use probe-rs for flashing and debugging
+runner = "probe-rs run --chip STM32F446RETx"
+
+rustflags = [
+  # LLD (shipped with Rust) for linking
+  "-C", "link-arg=-Tlink.x",
+
+  # Enable defmt logging
+  "-C", "link-arg=-Tdefmt.x",
+
+  # Optimize for size
+  "-C", "inline-threshold=5",
+  "-C", "no-vectorize-loops",
+]
+
+[build]
+# Target for STM32F446RE (Cortex-M4F with hardware floating point)
+target = "thumbv7em-none-eabihf"
+
+[env]
+DEFMT_LOG = "debug"

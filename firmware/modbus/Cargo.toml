@@ -1,0 +1,37 @@
+[package]
+name = "modbus-tcp"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "modbus_1"
+path = "src/modbus_1.rs"
+
+[[bin]]
+name = "modbus_2"
+path = "src/modbus_2.rs"
+
+[dependencies]
+embassy-executor = { version = "0.6", features = ["arch-cortex-m", "executor-thread", "defmt", "integrated-timers"] }
+embassy-stm32 = { version = "0.1", features = ["stm32f446re", "time-driver-tim2", "defmt", "exti"] }
+embassy-time = { version = "0.3", features = ["defmt", "tick-hz-32_768"] }
+embassy-sync = { version = "0.6", features = ["defmt"] }
+w5500 = "0.4"
+rmodbus = { version = "0.9", default-features = false }
+shtcx = "0.11"
+ssd1306 = "0.8"
+embedded-graphics = "0.8"
+defmt = "0.3"
+defmt-rtt = "0.4"
+panic-probe = { version = "0.3", features = ["print-defmt"] }
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
+cortex-m-rt = "0.7"
+embedded-hal = "1.0"
+embedded-hal-async = "1.0"
+embedded-hal-bus = "0.2"
+heapless = "0.8"
+
+[profile.release]
+debug = 2
+lto = true
+opt-level = "z"

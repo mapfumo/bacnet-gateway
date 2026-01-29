@@ -1,0 +1,45 @@
+[package]
+name = "bacnet-gateway"
+version = "0.1.0"
+authors = ["Antony Mapfumo"]
+edition = "2021"
+
+[dependencies]
+# Embassy framework
+# Note: task-arena-size-32768 needed because main task has large buffers (4x 512 byte arrays)
+embassy-executor = { version = "0.6", features = ["arch-cortex-m", "executor-thread", "defmt", "integrated-timers", "task-arena-size-32768"] }
+embassy-stm32 = { version = "0.1", features = ["stm32f446re", "time-driver-tim2", "defmt", "exti"] }
+embassy-time = { version = "0.3", features = ["defmt", "tick-hz-32_768"] }
+embassy-sync = { version = "0.6", features = ["defmt"] }
+
+# W5500 Ethernet
+w5500 = "0.4"
+
+# Sensors
+shtcx = "0.11"
+
+# Display
+ssd1306 = "0.8"
+embedded-graphics = "0.8"
+
+# Debugging
+defmt = "0.3"
+defmt-rtt = "0.4"
+panic-probe = { version = "0.3", features = ["print-defmt"] }
+
+# Cortex-M
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
+cortex-m-rt = "0.7"
+
+# Embedded HAL
+embedded-hal = "1.0"
+embedded-hal-async = "1.0"
+embedded-hal-bus = "0.2"
+
+# Utilities
+heapless = "0.8"
+
+[profile.release]
+debug = 2
+lto = true
+opt-level = "z"
