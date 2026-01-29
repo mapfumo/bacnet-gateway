@@ -2,7 +2,11 @@
 
 A complete Industrial IoT monitoring solution combining **LoRaWAN**, **Modbus TCP**, and **BACnet/IP** protocols into a unified Grafana dashboard.
 
-> **Note:** This project evolved from [wk11-unified-monitoring](https://github.com/username/wk11-unified-monitoring), extending it with BACnet/IP support and consolidating all firmware into a single repository.
+<p align="center">
+  <img src="docs/architecture.svg" alt="System Architecture" width="800">
+</p>
+
+> **Note:** This project evolved from [wk11-unified-monitoring](https://github.com/mapfumo/wk11-unified-monitoring), extending it with BACnet/IP support and consolidating all firmware into a single repository.
 
 ## Features
 
@@ -127,6 +131,7 @@ python3 bacnet_to_influx.py &
 | Device | 1234 | Object_Name | "BACnet-Gateway" |
 | Analog Input | 0 | Present_Value | Temperature (°C) |
 | Analog Input | 1 | Present_Value | Humidity (%) |
+| Analog Value | 0 | Present_Value | Uptime (seconds) |
 
 ### LoRaWAN
 

@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500">
+  <defs>
+    <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a90d9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357abd;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gatewayGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e67e22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d35400;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bridgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#27ae60;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e8449;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dbGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9b59b6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8e44ad;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dashGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="500" fill="#1a1a2e"/>
+
+  <!-- Title -->
+  <text x="450" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ecf0f1" text-anchor="middle">Unified IIoT Monitoring Platform</text>
+  <text x="450" y="55" font-family="Arial, sans-serif" font-size="12" fill="#95a5a6" text-anchor="middle">LoRaWAN + Modbus TCP + BACnet/IP → InfluxDB → Grafana</text>
+
+  <!-- Section Labels -->
+  <text x="100" y="90" font-family="Arial, sans-serif" font-size="11" fill="#7f8c8d" text-anchor="middle">SENSOR NODES</text>
+  <text x="300" y="90" font-family="Arial, sans-serif" font-size="11" fill="#7f8c8d" text-anchor="middle">GATEWAYS</text>
+  <text x="500" y="90" font-family="Arial, sans-serif" font-size="11" fill="#7f8c8d" text-anchor="middle">PYTHON BRIDGES</text>
+  <text x="700" y="90" font-family="Arial, sans-serif" font-size="11" fill="#7f8c8d" text-anchor="middle">DATA LAYER</text>
+
+  <!-- LoRaWAN Nodes -->
+  <rect x="30" y="110" width="140" height="70" rx="8" fill="url(#nodeGrad)" stroke="#2980b9" stroke-width="2"/>
+  <text x="100" y="135" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">LoRaWAN Node 1</text>
+  <text x="100" y="152" font-family="monospace" font-size="9" fill="#d5e8f7" text-anchor="middle">STM32WL55JC</text>
+  <text x="100" y="168" font-family="monospace" font-size="9" fill="#d5e8f7" text-anchor="middle">BME680 Sensor</text>
+
+  <rect x="30" y="195" width="140" height="70" rx="8" fill="url(#nodeGrad)" stroke="#2980b9" stroke-width="2"/>
+  <text x="100" y="220" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">LoRaWAN Node 2</text>
+  <text x="100" y="237" font-family="monospace" font-size="9" fill="#d5e8f7" text-anchor="middle">STM32WL55JC</text>
+  <text x="100" y="253" font-family="monospace" font-size="9" fill="#d5e8f7" text-anchor="middle">BME680 Sensor</text>
+
+  <!-- Modbus Node -->
+  <rect x="30" y="280" width="140" height="70" rx="8" fill="url(#nodeGrad)" stroke="#2980b9" stroke-width="2"/>
+  <text x="100" y="305" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Modbus Node 2</text>
+  <text x="100" y="322" font-family="monospace" font-size="9" fill="#d5e8f7" text-anchor="middle">STM32F446RE+W5500</text>
+  <text x="100" y="338" font-family="monospace" font-size="9" fill="#d5e8f7" text-anchor="middle">10.10.10.200:502</text>
+
+  <!-- LoRaWAN Gateway -->
+  <rect x="230" y="140" width="140" height="80" rx="8" fill="url(#gatewayGrad)" stroke="#e67e22" stroke-width="2"/>
+  <text x="300" y="165" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">LoRaWAN Gateway</text>
+  <text x="300" y="182" font-family="monospace" font-size="9" fill="#fdebd0" text-anchor="middle">ChirpStack</text>
+  <text x="300" y="198" font-family="monospace" font-size="9" fill="#fdebd0" text-anchor="middle">10.10.10.254</text>
+  <text x="300" y="214" font-family="monospace" font-size="9" fill="#fdebd0" text-anchor="middle">MQTT:1883</text>
+
+  <!-- Unified Gateway -->
+  <rect x="230" y="250" width="140" height="100" rx="8" fill="url(#gatewayGrad)" stroke="#e67e22" stroke-width="2"/>
+  <text x="300" y="275" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Unified Gateway</text>
+  <text x="300" y="292" font-family="monospace" font-size="9" fill="#fdebd0" text-anchor="middle">STM32F446RE+W5500</text>
+  <text x="300" y="308" font-family="monospace" font-size="9" fill="#fdebd0" text-anchor="middle">10.10.10.100</text>
+  <text x="300" y="324" font-family="monospace" font-size="9" fill="#fdebd0" text-anchor="middle">Modbus:502</text>
+  <text x="300" y="340" font-family="monospace" font-size="9" fill="#fdebd0" text-anchor="middle">BACnet:47808</text>
+
+  <!-- Python Bridges -->
+  <rect x="430" y="110" width="140" height="55" rx="8" fill="url(#bridgeGrad)" stroke="#27ae60" stroke-width="2"/>
+  <text x="500" y="133" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">mqtt_to_influx.py</text>
+  <text x="500" y="152" font-family="monospace" font-size="9" fill="#d5f5e3" text-anchor="middle">LoRaWAN → InfluxDB</text>
+
+  <rect x="430" y="180" width="140" height="55" rx="8" fill="url(#bridgeGrad)" stroke="#27ae60" stroke-width="2"/>
+  <text x="500" y="203" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">modbus_to_influx.py</text>
+  <text x="500" y="222" font-family="monospace" font-size="9" fill="#d5f5e3" text-anchor="middle">Modbus → InfluxDB</text>
+
+  <rect x="430" y="250" width="140" height="55" rx="8" fill="url(#bridgeGrad)" stroke="#27ae60" stroke-width="2"/>
+  <text x="500" y="273" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">bacnet_to_influx.py</text>
+  <text x="500" y="292" font-family="monospace" font-size="9" fill="#d5f5e3" text-anchor="middle">BACnet → InfluxDB</text>
+
+  <!-- InfluxDB -->
+  <rect x="630" y="150" width="120" height="80" rx="8" fill="url(#dbGrad)" stroke="#9b59b6" stroke-width="2"/>
+  <text x="690" y="178" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">InfluxDB 2</text>
+  <text x="690" y="198" font-family="monospace" font-size="9" fill="#e8daef" text-anchor="middle">Time Series DB</text>
+  <text x="690" y="215" font-family="monospace" font-size="9" fill="#e8daef" text-anchor="middle">:8086</text>
+
+  <!-- Grafana -->
+  <rect x="630" y="250" width="120" height="80" rx="8" fill="url(#dashGrad)" stroke="#e74c3c" stroke-width="2"/>
+  <text x="690" y="278" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Grafana</text>
+  <text x="690" y="298" font-family="monospace" font-size="9" fill="#fadbd8" text-anchor="middle">Dashboards</text>
+  <text x="690" y="315" font-family="monospace" font-size="9" fill="#fadbd8" text-anchor="middle">:3000</text>
+
+  <!-- Connection Lines -->
+  <!-- LoRaWAN nodes to gateway -->
+  <line x1="170" y1="145" x2="230" y2="165" stroke="#3498db" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="170" y1="230" x2="230" y2="195" stroke="#3498db" stroke-width="2" stroke-dasharray="5,3"/>
+
+  <!-- Modbus node to unified gateway -->
+  <line x1="170" y1="315" x2="230" y2="300" stroke="#3498db" stroke-width="2"/>
+
+  <!-- Gateways to bridges -->
+  <line x1="370" y1="180" x2="430" y2="137" stroke="#f39c12" stroke-width="2"/>
+  <line x1="370" y1="290" x2="430" y2="207" stroke="#f39c12" stroke-width="2"/>
+  <line x1="370" y1="310" x2="430" y2="277" stroke="#f39c12" stroke-width="2"/>
+
+  <!-- Bridges to InfluxDB -->
+  <line x1="570" y1="137" x2="630" y2="175" stroke="#2ecc71" stroke-width="2"/>
+  <line x1="570" y1="207" x2="630" y2="190" stroke="#2ecc71" stroke-width="2"/>
+  <line x1="570" y1="277" x2="630" y2="205" stroke="#2ecc71" stroke-width="2"/>
+
+  <!-- InfluxDB to Grafana -->
+  <line x1="690" y1="230" x2="690" y2="250" stroke="#9b59b6" stroke-width="2"/>
+
+  <!-- Protocol Labels -->
+  <rect x="175" y="130" width="50" height="16" rx="3" fill="#2c3e50"/>
+  <text x="200" y="142" font-family="monospace" font-size="8" fill="#ecf0f1" text-anchor="middle">LoRa</text>
+
+  <rect x="175" y="300" width="50" height="16" rx="3" fill="#2c3e50"/>
+  <text x="200" y="312" font-family="monospace" font-size="8" fill="#ecf0f1" text-anchor="middle">TCP</text>
+
+  <rect x="375" y="160" width="50" height="16" rx="3" fill="#2c3e50"/>
+  <text x="400" y="172" font-family="monospace" font-size="8" fill="#ecf0f1" text-anchor="middle">MQTT</text>
+
+  <rect x="375" y="195" width="50" height="16" rx="3" fill="#2c3e50"/>
+  <text x="400" y="207" font-family="monospace" font-size="8" fill="#ecf0f1" text-anchor="middle">Modbus</text>
+
+  <rect x="375" y="270" width="50" height="16" rx="3" fill="#2c3e50"/>
+  <text x="400" y="282" font-family="monospace" font-size="8" fill="#ecf0f1" text-anchor="middle">BACnet</text>
+
+  <!-- Legend -->
+  <rect x="30" y="390" width="840" height="95" rx="8" fill="#16213e" stroke="#34495e" stroke-width="1"/>
+  <text x="450" y="412" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#bdc3c7" text-anchor="middle">Technology Stack</text>
+
+  <rect x="50" y="425" width="12" height="12" fill="url(#nodeGrad)"/>
+  <text x="70" y="435" font-family="Arial, sans-serif" font-size="10" fill="#ecf0f1">Embedded Rust (Embassy async)</text>
+
+  <rect x="250" y="425" width="12" height="12" fill="url(#gatewayGrad)"/>
+  <text x="270" y="435" font-family="Arial, sans-serif" font-size="10" fill="#ecf0f1">Protocol Gateways</text>
+
+  <rect x="420" y="425" width="12" height="12" fill="url(#bridgeGrad)"/>
+  <text x="440" y="435" font-family="Arial, sans-serif" font-size="10" fill="#ecf0f1">Python 3.11 (Raw Sockets)</text>
+
+  <rect x="620" y="425" width="12" height="12" fill="url(#dbGrad)"/>
+  <text x="640" y="435" font-family="Arial, sans-serif" font-size="10" fill="#ecf0f1">Time Series DB</text>
+
+  <rect x="770" y="425" width="12" height="12" fill="url(#dashGrad)"/>
+  <text x="790" y="435" font-family="Arial, sans-serif" font-size="10" fill="#ecf0f1">Visualization</text>
+
+  <text x="450" y="465" font-family="monospace" font-size="9" fill="#7f8c8d" text-anchor="middle">STM32F446RE • STM32WL55JC • W5500 Ethernet • SHT3x/BME680 Sensors • Docker Compose • No External Protocol Libraries</text>
+</svg>
