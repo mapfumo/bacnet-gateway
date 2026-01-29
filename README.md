@@ -1,22 +1,34 @@
 # Unified IIoT Monitoring Platform
 
-A complete Industrial IoT monitoring solution combining **LoRaWAN**, **Modbus TCP**, and **BACnet/IP** protocols into a unified Grafana dashboard.
+A complete Industrial IoT monitoring solution combining **LoRaWAN**, **Modbus TCP**, and **BACnet/IP** protocols into a unified Grafana dashboard. Built with embedded Rust firmware and Python data collectors.
 
 <p align="center">
   <img src="docs/architecture.svg" alt="System Architecture" width="800">
 </p>
 
-> **Note:** This project evolved from [wk11-unified-monitoring](https://github.com/mapfumo/wk11-unified-monitoring), extending it with BACnet/IP support and consolidating all firmware into a single repository.
+> This project evolved from [wk11-unified-monitoring](https://github.com/mapfumo/wk11-unified-monitoring), extending it with BACnet/IP support and consolidating all firmware into a single repository.
 
 ## Features
 
-- **Multi-Protocol Support**: LoRaWAN, Modbus TCP, and BACnet/IP
-- **Unified Dashboard**: All sensor data visualized in Grafana
-- **Embedded Rust Firmware**: Embassy async runtime on STM32
-- **Docker Infrastructure**: InfluxDB, Grafana, Mosquitto with one command
-- **Pure Socket Implementations**: No external protocol libraries
+- **Multi-Protocol Support** - LoRaWAN, Modbus TCP, and BACnet/IP on a unified platform
+- **Embedded Rust Firmware** - Embassy async runtime on STM32 microcontrollers
+- **Pure Socket Implementations** - No external protocol libraries (educational focus)
+- **Docker Infrastructure** - InfluxDB, Grafana, and Mosquitto with one command
+- **Auto-Provisioned Dashboards** - Grafana dashboards ready out of the box
 
-## Hardware
+## Prerequisites
+
+### Software
+
+| Requirement | Version | Installation |
+|-------------|---------|--------------|
+| Docker & Docker Compose | Latest | [docs.docker.com](https://docs.docker.com/get-docker/) |
+| Rust | Latest stable | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh` |
+| ARM Target | thumbv7em-none-eabihf | `rustup target add thumbv7em-none-eabihf` |
+| probe-rs | Latest | `cargo install probe-rs-tools` |
+| Python | 3.11+ | System package manager |
+
+### Hardware
 
 | Device | MCU | Protocols | IP Address |
 |--------|-----|-----------|------------|
@@ -25,109 +37,85 @@ A complete Industrial IoT monitoring solution combining **LoRaWAN**, **Modbus TC
 | LoRa Node 1 | STM32WL55JC | LoRaWAN | via gateway |
 | LoRa Node 2 | STM32WL55JC | LoRaWAN | via gateway |
 
-All nodes use SHT3x temperature/humidity sensors and SSD1306 OLED displays.
+All nodes use **SHT3x** temperature/humidity sensors and **SSD1306** OLED displays.
 
-## Architecture
+### Network Configuration
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                           Sensor Nodes                                   │
-├─────────────────┬─────────────────┬─────────────────┬───────────────────┤
-│   LoRa Node 1   │   LoRa Node 2   │ Unified Gateway │   Modbus Node 2   │
-│   (STM32WL55)   │   (STM32WL55)   │  (STM32F446RE)  │   (STM32F446RE)   │
-│                 │                 │                 │                   │
-│   LoRaWAN       │   LoRaWAN       │ Modbus + BACnet │   Modbus TCP      │
-└────────┬────────┴────────┬────────┴────────┬────────┴─────────┬─────────┘
-         │                 │                 │                  │
-         ▼                 ▼                 ▼                  ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        Protocol Gateways                                 │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌────────────────────────┐ │
-│  │ ChirpStack       │  │ Direct TCP:502   │  │ Direct UDP:47808       │ │
-│  │ (LoRaWAN → MQTT) │  │ (Modbus TCP)     │  │ (BACnet/IP)            │ │
-│  └────────┬─────────┘  └────────┬─────────┘  └───────────┬────────────┘ │
-└───────────┼─────────────────────┼────────────────────────┼──────────────┘
-            │                     │                        │
-            ▼                     ▼                        ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        Python Data Collectors                            │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌────────────────────────┐ │
-│  │ mqtt_to_influx   │  │ modbus_to_influx │  │ bacnet_to_influx       │ │
-│  └────────┬─────────┘  └────────┬─────────┘  └───────────┬────────────┘ │
-└───────────┼─────────────────────┼────────────────────────┼──────────────┘
-            │                     │                        │
-            ▼                     ▼                        ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                            InfluxDB                                      │
-│                    Bucket: sensors                                       │
-│   ┌────────────────┐ ┌────────────────┐ ┌────────────────┐              │
-│   │ lorawan_sensor │ │ modbus_sensor  │ │ bacnet_sensor  │              │
-│   └────────────────┘ └────────────────┘ └────────────────┘              │
-└─────────────────────────────────┬───────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                            Grafana                                       │
-│                    Unified Dashboard                                     │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+The OT (Operational Technology) network uses subnet `10.10.10.0/24`. Ensure your host machine can reach this subnet for Modbus/BACnet communication.
 
 ## Quick Start
 
-### 1. Start Infrastructure
+### Step 1: Clone and Start Services
 
 ```bash
+git clone https://github.com/mapfumo/bacnet-gateway.git
+cd bacnet-gateway
+
 # Start Docker services (InfluxDB, Grafana, Mosquitto)
 ./start_services.sh
 
-# Access Grafana at http://localhost:3000 (admin / admin123456)
+# Verify services are running
+docker compose ps
 ```
 
-### 2. Flash Firmware
+### Step 2: Access the Dashboard
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+- **Username:** `admin`
+- **Password:** `admin123456`
+
+### Step 3: Flash Firmware (Optional - requires hardware)
 
 ```bash
-# Prerequisites
-rustup target add thumbv7em-none-eabihf
-cargo install probe-rs-tools
-
-# Flash Unified Gateway (Modbus + BACnet)
+# Unified Gateway (Modbus TCP + BACnet/IP)
 cd firmware/unified-gateway
-cargo run --release
+cargo build --release
+probe-rs run --chip STM32F446RETx target/thumbv7em-none-eabihf/release/bacnet-gateway
 
-# Flash other nodes as needed
+# Modbus Node 2
+cd firmware/modbus
+cargo build --release --bin modbus_2
+probe-rs run --chip STM32F446RETx target/thumbv7em-none-eabihf/release/modbus_2
+
+# LoRaWAN nodes (requires STM32WL55 hardware)
 cd firmware/lorawan/lora-1 && cargo run --release
 cd firmware/lorawan/lora-2 && cargo run --release
-cd firmware/modbus && cargo run --release --bin modbus_2
 ```
 
-### 3. Run Data Collectors
+### Step 4: Start Data Collectors
 
 ```bash
-# LoRaWAN (via Docker)
-# Already running in mqtt-bridge container
+# Terminal 1: Modbus TCP collector
+python3 modbus_to_influx.py
 
-# Modbus TCP
-python3 modbus_to_influx.py &
+# Terminal 2: BACnet/IP collector
+python3 bacnet_to_influx.py
 
-# BACnet/IP
-python3 bacnet_to_influx.py &
+# LoRaWAN collector runs automatically in Docker (mqtt-bridge container)
 ```
 
-## Protocol Details
+### Step 5: Stop Services
+
+```bash
+./stop_services.sh
+```
+
+## Protocol Reference
 
 ### Modbus TCP (Port 502)
 
-| Register | Description | Type |
-|----------|-------------|------|
-| 0-1 | Temperature | f32 (IEEE 754) |
-| 2-3 | Humidity | f32 (IEEE 754) |
-| 4 | Status | u16 |
-| 5-6 | Uptime | u32 |
+| Register | Description | Data Type |
+|----------|-------------|-----------|
+| 0-1 | Temperature | float32 (IEEE 754) |
+| 2-3 | Humidity | float32 (IEEE 754) |
+| 4 | Device Status | uint16 |
+| 5-6 | Uptime | uint32 (seconds) |
 
 ### BACnet/IP (Port 47808)
 
-| Object | Instance | Property | Value |
-|--------|----------|----------|-------|
+| Object Type | Instance | Property | Description |
+|-------------|----------|----------|-------------|
 | Device | 1234 | Object_Name | "BACnet-Gateway" |
 | Analog Input | 0 | Present_Value | Temperature (°C) |
 | Analog Input | 1 | Present_Value | Humidity (%) |
@@ -135,96 +123,101 @@ python3 bacnet_to_influx.py &
 
 ### LoRaWAN
 
-OTAA join with automatic rejoin on gateway restart. Uplinks every 30 seconds with BME680 sensor data (temperature, humidity, pressure, gas resistance).
+- **Join Method:** OTAA with automatic rejoin
+- **Uplink Interval:** 30 seconds
+- **Sensor:** BME680 (temperature, humidity, pressure, gas resistance)
 
 ## Project Structure
 
 ```
-unified-iiot-platform/
+bacnet-gateway/
 ├── firmware/
-│   ├── unified-gateway/     # Modbus TCP + BACnet/IP (10.10.10.100)
-│   ├── modbus/              # Modbus node 2 (10.10.10.200)
+│   ├── unified-gateway/          # Modbus TCP + BACnet/IP firmware
+│   ├── modbus/                   # Standalone Modbus node firmware
 │   └── lorawan/
-│       ├── lora-1/          # LoRaWAN node 1
-│       ├── lora-2/          # LoRaWAN node 2
-│       ├── lora-phy-patched/
+│       ├── lora-1/               # LoRaWAN node 1 firmware
+│       ├── lora-2/               # LoRaWAN node 2 firmware
+│       ├── lora-phy-patched/     # Patched LoRa PHY library
 │       └── lorawan-device-patched/
 ├── grafana/
-│   └── dashboards/          # Auto-provisioned dashboards
+│   └── dashboards/               # Auto-provisioned Grafana dashboards
 ├── mosquitto/
-│   └── config/              # MQTT broker configuration
-├── bacnet_to_influx.py      # BACnet data collector
-├── modbus_to_influx.py      # Modbus data collector
-├── mqtt_to_influx.py        # LoRaWAN MQTT bridge
-├── mqtt_subscriber.py       # Debug MQTT subscriber
-├── docker-compose.yml       # Infrastructure services
-├── start_services.sh
-├── stop_services.sh
-├── CLAUDE.md                # AI assistant context
-└── TROUBLESHOOTING.md       # Common issues and solutions
+│   └── config/                   # MQTT broker configuration
+├── docs/
+│   └── architecture.svg          # System architecture diagram
+├── bacnet_to_influx.py           # BACnet/IP → InfluxDB collector
+├── modbus_to_influx.py           # Modbus TCP → InfluxDB collector
+├── mqtt_to_influx.py             # LoRaWAN MQTT → InfluxDB bridge
+├── mqtt_subscriber.py            # Debug tool for MQTT messages
+├── docker-compose.yml            # Infrastructure services
+├── start_services.sh             # Start all Docker services
+├── stop_services.sh              # Stop all Docker services
+└── TROUBLESHOOTING.md            # Common issues and solutions
 ```
 
 ## Service Endpoints
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| Grafana | http://localhost:3000 | admin / admin123456 |
-| InfluxDB | http://localhost:8086 | admin / admin123456 |
+| Grafana | [http://localhost:3000](http://localhost:3000) | admin / admin123456 |
+| InfluxDB | [http://localhost:8086](http://localhost:8086) | admin / admin123456 |
 | MQTT Broker | localhost:1883 | anonymous |
 
 ## Testing
 
-### Modbus TCP
+### Verify Modbus TCP
 
 ```bash
-# Using modbus-cli
+# Install modbus-cli: pip install modbus-cli
 modbus tcp://10.10.10.100 read 0 4
 modbus tcp://10.10.10.200 read 0 4
 ```
 
-### BACnet/IP
+### Verify BACnet/IP
 
-1. Install [Yabe](https://sourceforge.net/projects/yetanotherbacnetexplorer/)
-2. Send Who-Is broadcast
+Use [Yabe (Yet Another BACnet Explorer)](https://sourceforge.net/projects/yetanotherbacnetexplorer/):
+
+1. Launch Yabe and click "Add Device"
+2. Send Who-Is broadcast on your network interface
 3. Device 1234 should appear
-4. Read Analog Input 0 (temperature) and 1 (humidity)
+4. Browse Analog Input 0 (temperature), Analog Input 1 (humidity), Analog Value 0 (uptime)
 
-### LoRaWAN
+### Verify LoRaWAN
 
 ```bash
-# View decoded sensor readings
+# View decoded sensor readings from MQTT
 python3 mqtt_subscriber.py
 ```
 
 ## Troubleshooting
 
-See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues including:
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for solutions to common issues:
 
-- W5500 SPI communication failures
-- BACnet packet parsing issues
-- Embassy task arena sizing
-- LoRaWAN session management
-- Docker service issues
+- W5500 SPI communication failures (returns 0x00)
+- BACnet ReadProperty parsing errors
+- Embassy task arena sizing (`task-arena-size-32768`)
+- LoRaWAN join failures and session management
+- Docker networking issues
+- probe-rs "device busy" errors
 
-## Evolution from wk11-unified-monitoring
-
-This project builds upon and consolidates [wk11-unified-monitoring](../wk11-unified-monitoring/):
+## What's New vs wk11-unified-monitoring
 
 | Feature | wk11 | This Project |
-|---------|------|--------------|
-| LoRaWAN | ✓ | ✓ |
+|---------|:----:|:------------:|
+| LoRaWAN nodes | ✓ | ✓ |
 | Modbus TCP | ✓ (2 nodes) | ✓ (1 node + unified) |
 | BACnet/IP | ✗ | ✓ |
-| Unified Gateway | ✗ | ✓ (Modbus + BACnet) |
+| Unified Gateway | ✗ | ✓ |
 | Single Repository | ✗ | ✓ |
+| Uptime via BACnet | ✗ | ✓ |
 
 ## References
 
-- [Embassy Framework](https://embassy.dev/)
-- [BACnet Standard (ASHRAE 135)](https://www.ashrae.org/)
-- [Modbus Application Protocol](https://modbus.org/specs.php)
-- [LoRaWAN Specification](https://lora-alliance.org/lorawan-for-developers/)
-- [W5500 Datasheet](https://www.wiznet.io/product-item/w5500/)
+- [Embassy Framework](https://embassy.dev/) - Async embedded Rust
+- [BACnet Standard (ASHRAE 135)](https://www.ashrae.org/) - Building automation protocol
+- [Modbus Application Protocol](https://modbus.org/specs.php) - Industrial protocol specification
+- [LoRaWAN Specification](https://lora-alliance.org/lorawan-for-developers/) - LPWAN protocol
+- [W5500 Datasheet](https://www.wiznet.io/product-item/w5500/) - Hardwired TCP/IP Ethernet controller
 
 ## License
 
